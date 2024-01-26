@@ -1,6 +1,4 @@
-import React from 'react';
-
-const HomePage = () => {
+function HomePage() {
     return (
         <div>
             <h1>Welcome to PDEfuse</h1>
