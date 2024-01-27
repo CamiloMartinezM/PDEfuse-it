@@ -1,3 +1,4 @@
+import Slider from "../components/forms/slider";
 import PageLayout from "../components/page-layout";
 
 function HomePage() {
@@ -23,9 +24,7 @@ function HomePage() {
                     </ul>
                 </div>
             </div>
-            
-            <label htmlFor="customRange1" className="form-label">Example range</label>
-            <input type="range" className="form-range" id="customRange1"></input>
+            <Slider />
         </PageLayout>
     );
 };
