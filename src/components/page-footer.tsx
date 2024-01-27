@@ -1,4 +1,3 @@
-import React from "react";
 export default function PageFooter() {
   return (
   <footer className="pt-5 my-5 text-muted border-top">

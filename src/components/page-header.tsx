@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function PageHeader() {
     return (
     <header className="d-flex align-items-center pb-3 mb-5 border-bottom">
