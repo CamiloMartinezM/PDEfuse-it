@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { processImageWithHomogeneousDiffusion } from "../diffusion-algorithms/homogeneous-diffusion";
+import { InputField } from "./input-field";
 
 const ImageUploader = () => {
     const [image, setImage] = useState<string | null>(null);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
+    const [iterations, setIterations] = useState<number>(10); // Default value
+    const [tau, setTau] = useState<number>(0.25); // Default value
 
     const handleHomogeneousDiffusion = () => {
         if (!image) return;
@@ -18,7 +21,11 @@ const ImageUploader = () => {
             if (ctx) {
                 ctx.drawImage(imageElement, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const processedImageData = processImageWithHomogeneousDiffusion(imageData);
+                const processedImageData = processImageWithHomogeneousDiffusion(
+                    imageData,
+                    iterations,
+                    tau
+                );
 
                 // Draw the processed image data back onto the canvas
                 ctx.putImageData(processedImageData, 0, 0);
@@ -52,6 +59,25 @@ const ImageUploader = () => {
             <div className="col-md-6">
                 <h3 className="text-muted">Test out Homogeneous diffusion!</h3>
                 <p>Upload your own image...</p>
+                <div>
+                    <InputField
+                        type="number"
+                        label="Number of Iterations:"
+                        className="input-style-class"
+                        value={iterations}
+                        onChange={(e) => setIterations(Number(e.target.value))}
+                    />
+                </div>
+                <div>
+                    <InputField
+                        type="number"
+                        label="Time-step:"
+                        className="input-style-class"
+                        value={tau}
+                        onChange={(e) => setTau(Number(e.target.value))}
+                        step="0.01"
+                    />
+                </div>
                 <div>
                     <input type="file" accept="image/*" onChange={handleImageChange} />
                     {image && (
