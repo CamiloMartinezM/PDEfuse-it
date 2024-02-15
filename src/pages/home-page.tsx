@@ -1,10 +1,11 @@
 import Slider from "../components/forms/slider";
 import PageLayout from "../components/page-layout";
+import ImageUploader from "../components/forms/image-uploader";
 
 function HomePage() {
     return (
         <PageLayout>
-            <h1 className="mb-4">Homogenous Diffusion Demo</h1>
+            <h1 className="mb-4">Homogeneous Diffusion Demo</h1>
             <div className="row g-5">
                 <div className="col-md-6">
                     <h3 className="text-muted">Ideas</h3>
@@ -24,7 +25,7 @@ function HomePage() {
                     </ul>
                 </div>
             </div>
-            <Slider />
+            <ImageUploader />
         </PageLayout>
     );
 };
