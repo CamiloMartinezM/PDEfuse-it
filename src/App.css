@@ -36,14 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.form-label {
-    display: block; /* Ensure the label takes up the full width */
-    margin-bottom: 5px; /* Add some space between the label and the input */
-}
-
-.input-style-class {
-    display: block; /* Ensure the input takes up the full width */
-    width: 100%; /* Make the input expand to fill its container */
-    margin-bottom: 15px; /* Add some space after the input before the next element */
-}
