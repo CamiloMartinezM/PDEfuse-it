@@ -1,10 +1,11 @@
 import { ImageCanvas } from "../components/interaction-panels/image-canvas";
 import PageLayout from "../components/page-layout";
+import ImageUploader from "../components/forms/image-uploader";
 
 function HomePage() {
     return (
         <PageLayout>
-            <h1 className="mb-4">Homogenous Diffusion Demo</h1>
+            <h1 className="mb-4">Homogeneous Diffusion Demo</h1>
             <div className="row g-5">
                 <div className="col-md-6">
                     <h3 className="text-muted">Ideas</h3>
@@ -24,9 +25,7 @@ function HomePage() {
                     </ul>
                 </div>
             </div>
-            <div className="mt-4">
-                <ImageCanvas data={Array(2500).fill(125)} width={50} height={50} />
-            </div>
+            <ImageUploader />
         </PageLayout>
     );
 };
