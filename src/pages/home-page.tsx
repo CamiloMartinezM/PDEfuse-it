@@ -1,4 +1,4 @@
-import Slider from "../components/forms/slider";
+import { ImageCanvas } from "../components/interaction-panels/image-canvas";
 import PageLayout from "../components/page-layout";
 
 function HomePage() {
@@ -24,7 +24,9 @@ function HomePage() {
                     </ul>
                 </div>
             </div>
-            <Slider />
+            <div className="mt-4">
+                <ImageCanvas data={Array(2500).fill(125)} width={50} height={50} />
+            </div>
         </PageLayout>
     );
 };
