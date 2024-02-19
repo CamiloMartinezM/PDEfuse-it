@@ -1,31 +1,44 @@
-import Slider from "../components/forms/slider";
+import { useEffect, useRef } from "react";
 import PageLayout from "../components/page-layout";
-import ImageUploader from "../components/forms/image-uploader";
+import "./home-page.css";
+
+function draw(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
+    ctx.moveTo(25, 50);
+    ctx.lineTo(50, 75);
+    ctx.lineTo(50, 65);
+    ctx.lineTo(100, 65);
+    ctx.lineTo(100, 35);
+    ctx.lineTo(50, 35);
+    ctx.lineTo(50, 25);
+
+
+    
+    ctx.fill();
+}
 
 function HomePage() {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+        const convasElement = canvasRef.current;
+
+        if (convasElement !== null) {
+            const ctx = convasElement.getContext('2d')
+            
+            if (ctx === null) {
+                console.error("Cannot get 2d context from canvas!");
+            } else {
+                draw(ctx)
+            }
+        }
+      }, [canvasRef])      
+
     return (
         <PageLayout>
-            <h1 className="mb-4">Homogeneous Diffusion Demo</h1>
-            <div className="row g-5">
-                <div className="col-md-6">
-                    <h3 className="text-muted">Ideas</h3>
-                    <p>Cool ideas will be listed here</p>
-                    <ul>
-                        <li>Should we include comparison of gaussian blur with homo. diffusion?</li>
-                    </ul>
-                </div>
-
-                <div className="col-md-6">
-                    <h3 className="text-muted">Agenda</h3>
-                    <p>Current todos will be listed here</p>
-                    <ul>
-                        <li>Write form components: slider, checkboxs, numboxs</li>
-                        <li>Research how to render latex included markdown</li>
-                        <li>Make Homo diffusion</li>
-                    </ul>
-                </div>
+            <div className="d-flex justify-content-center">
+                <canvas id="canvas" width="150" height="150" ref={canvasRef}></canvas>
             </div>
-            <ImageUploader />
         </PageLayout>
     );
 };

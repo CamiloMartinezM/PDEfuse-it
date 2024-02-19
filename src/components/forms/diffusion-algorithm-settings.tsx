@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InputField } from "./input-field";
-import { processImageWithHomogeneousDiffusion } from '../diffusion-algorithms/homogeneous-diffusion';
+import { processImageWithHomogeneousDiffusion } from '../../filters/homogeneous-diffusion';
 
 /* Custom Types */
 

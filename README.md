@@ -4,9 +4,20 @@ Made with ❤️ by C. J. (Camilo & Jackie)
 Credit goes to [Dr. Pascal Peter](https://www.mia.uni-saarland.de/peter/index.shtml) who delivered this awesome course
 and our tutor: Sivakumaran Harishanth. 
 
+## Task Splits
+* **C**
+  * Diffusion Filters
+  * Renderer
+  * Blog
+* **J**
+  * Layouts & Routes
+  * Renderer
+  * Helper Components 
+
 ## TODOs 
 ### New Features
 * [Render markdown](https://github.com/remarkjs/react-markdown)
+* Use `<canvas>` to render images instead of `<img>`
 ### Problems
 * Form logic still crap, fix it
   * separate input tag from `InputField` component
