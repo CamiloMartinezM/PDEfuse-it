@@ -24,3 +24,5 @@ export function readPGMFile(file: File) {
     const reader = file.stream().getReader();
     reader.read()
 }
+
+// export function smallArrow(x, y)
