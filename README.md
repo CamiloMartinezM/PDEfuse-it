@@ -14,11 +14,12 @@ and our tutor: Sivakumaran Harishanth.
   * Renderer
   * Helper Components 
 
-## TODOs 
-### New Features
+## Quests
+### Main Story
 * [Render markdown](https://github.com/remarkjs/react-markdown)
 * Use `<canvas>` to render images instead of `<img>`
-### Problems
+### Side Quests
+* Arrow shape is shifted after rotation
 * Form logic still crap, fix it
   * separate input tag from `InputField` component
   * auto generate input id with context hooks
