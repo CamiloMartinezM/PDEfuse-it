@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { drawImage } from "../../utils/2d";
+import { drawImage } from "../../utils/2d/renderer";
 
 export type ImageCanvasProps = {
     data: number[]; // grey scaled img data

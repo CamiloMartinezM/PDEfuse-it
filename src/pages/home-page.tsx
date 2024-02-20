@@ -1,20 +1,21 @@
 import { useEffect, useRef } from "react";
 import PageLayout from "../components/page-layout";
 import "./home-page.css";
+import { arrow } from "../utils/2d/shapes";
 
 function draw(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
-    ctx.moveTo(25, 50);
-    ctx.lineTo(50, 75);
-    ctx.lineTo(50, 65);
-    ctx.lineTo(100, 65);
-    ctx.lineTo(100, 35);
-    ctx.lineTo(50, 35);
-    ctx.lineTo(50, 25);
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 6; j++) {
 
-
-    
-    ctx.fill();
+            const degree = 45; // change this
+            
+            const arrowPath = arrow(25 * i, 25 * j);
+            ctx.save();
+            ctx.rotate((degree * Math.PI) / 180); // Rotate
+            ctx.fill(arrowPath);
+            ctx.restore();
+        }
+    }
 }
 
 function HomePage() {
