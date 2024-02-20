@@ -9,7 +9,8 @@ and our tutor: Sivakumaran Harishanth.
 * [Render markdown](https://github.com/remarkjs/react-markdown)
 * Use `<canvas>` to render images instead of `<img>`
 ### Side Quests
-* Arrow shape is shifted after rotation
+* Arrows are shifted after rotation
+* Arrows have blur edges
 * Form logic still crap, fix it
   * separate input tag from `InputField` component
   * auto generate input id with context hooks
@@ -26,8 +27,8 @@ and our tutor: Sivakumaran Harishanth.
   * Helper Components 
 
 ## License & Contact
-© Camilo Martínez, <cama00005@uni-saarland.de>
+© Camilo Martínez, <cama00005@stud.uni-saarland.de>
 
-© Honglu Ma, <homa00001@uni-saarland.de>
+© Honglu Ma, <homa00001@stud.uni-saarland.de>
 
 Distributed under the [MIT License](LICENSE).
