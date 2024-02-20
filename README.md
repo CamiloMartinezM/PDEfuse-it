@@ -4,16 +4,6 @@ Made with ❤️ by C. J. (Camilo & Jackie)
 Credit goes to [Dr. Pascal Peter](https://www.mia.uni-saarland.de/peter/index.shtml) who delivered this awesome course
 and our tutor: Sivakumaran Harishanth. 
 
-## Task Splits
-* **C**
-  * Diffusion Filters
-  * Renderer
-  * Blog
-* **J**
-  * Layouts & Routes
-  * Renderer
-  * Helper Components 
-
 ## Quests
 ### Main Story
 * [Render markdown](https://github.com/remarkjs/react-markdown)
@@ -24,6 +14,16 @@ and our tutor: Sivakumaran Harishanth.
   * separate input tag from `InputField` component
   * auto generate input id with context hooks
   * what about select tag? how to composite it inside form field as it uses label as well
+
+## Task Splits
+* **C**
+  * Diffusion Filters
+  * Renderer
+  * Blog
+* **J**
+  * Layouts & Routes
+  * Renderer
+  * Helper Components 
 
 ## License & Contact
 © Camilo Martínez, <cama00005@uni-saarland.de>
