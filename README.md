@@ -4,6 +4,18 @@ Made with ❤️ by C. J. (Camilo & Jackie)
 Credit goes to [Dr. Pascal Peter](https://www.mia.uni-saarland.de/peter/index.shtml) who delivered this awesome course
 and our tutor: Sivakumaran Harishanth. 
 
+## Quests
+### Main Story
+* [Render markdown](https://github.com/remarkjs/react-markdown)
+* Use `<canvas>` to render images instead of `<img>`
+### Side Quests
+* Arrows are shifted after rotation
+* Arrows have blur edges
+* Form logic still crap, fix it
+  * separate input tag from `InputField` component
+  * auto generate input id with context hooks
+  * what about select tag? how to composite it inside form field as it uses label as well
+
 ## Task Splits
 * **C**
   * Diffusion Filters
@@ -14,19 +26,9 @@ and our tutor: Sivakumaran Harishanth.
   * Renderer
   * Helper Components 
 
-## TODOs 
-### New Features
-* [Render markdown](https://github.com/remarkjs/react-markdown)
-* Use `<canvas>` to render images instead of `<img>`
-### Problems
-* Form logic still crap, fix it
-  * separate input tag from `InputField` component
-  * auto generate input id with context hooks
-  * what about select tag? how to composite it inside form field as it uses label as well
-
 ## License & Contact
-© Camilo Martínez, <cama00005@uni-saarland.de>
+© Camilo Martínez, <cama00005@stud.uni-saarland.de>
 
-© Honglu Ma, <homa00001@uni-saarland.de>
+© Honglu Ma, <homa00001@stud.uni-saarland.de>
 
 Distributed under the [MIT License](LICENSE).
