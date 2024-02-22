@@ -22,6 +22,7 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
+        "test-cache-clear": "jest --clearCache",
         "test": "jest --silent --coverage",
         "test-silent": "jest --reporters jest-silent-reporter",
         "eject": "react-scripts eject"
@@ -46,6 +47,7 @@
     },
     "devDependencies": {
         "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
         "jest-silent-reporter": "^0.5.0",
         "ts-jest": "^29.1.2"
     },
@@ -83,6 +85,7 @@
             "jsx",
             "json",
             "node"
-        ]
+        ],
+        "testEnvironment": "jsdom"
     }
 }
