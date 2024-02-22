@@ -2,6 +2,11 @@
  * @brief Padding util function.
  * @file padding.ts
  */
+
+/**
+ * Available padding types to apply to the image.
+ * Some examples are given in the description of the `padMatrix` function.
+ */
 export enum PaddingType {
     CONSTANT = 'CONSTANT',
     REPEAT = 'REPEAT',
@@ -9,6 +14,9 @@ export enum PaddingType {
     EXTEND = 'EXTEND',
 }
 
+/**
+ * A 3D pixel matrix representing an image.
+ */
 type PixelMatrix = number[][][];
 
 /**

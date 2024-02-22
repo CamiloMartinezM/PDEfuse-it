@@ -1,4 +1,9 @@
 /**
+ * @brief Color-mappings util function for conversion between color spaces.
+ * @file color-mapping.ts
+ */
+
+/**
  * Converts RGB color values to grayscale.
  * 
  * @param red - The red component of the RGB color.
