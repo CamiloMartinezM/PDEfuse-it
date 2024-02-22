@@ -18,11 +18,11 @@ import { ImageBuffer, ImageType } from '../images/ImageBuffer';
  * @param paddingType - The type of padding to be applied to the input image before processing, to handle border effects.
  * @returns A new ImageBuffer object that is the result of applying the homogeneous diffusion filter to the input image.
  */
-const applyToImageBuffer = (
+export const applyToImageBuffer = (
     inputImage: ImageBuffer,
     iterations: number,
     tau: number,
-    paddingType: PaddingType
+    paddingType: PaddingType = PaddingType.CONSTANT
 ): ImageBuffer => {
     // Save original width and height of the input image
     let nx = inputImage.width;
