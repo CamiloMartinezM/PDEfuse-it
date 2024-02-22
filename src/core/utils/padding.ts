@@ -87,11 +87,9 @@ export const padMatrix = (
     const paddedMatrix: PixelMatrix = Array.from({ length: paddedHeight }, () => Array.from({ length: paddedWidth }, () => [...paddingValue]));
 
     // Copy the original matrix into the center of the padded matrix
-    for (let i = 0; i < height; i++) {
-        for (let j = 0; j < width; j++) {
+    for (let i = 0; i < height; i++) 
+        for (let j = 0; j < width; j++) 
             paddedMatrix[i + padHeight][j + padWidth] = [...matrix[i][j]];
-        }
-    }
 
     // Apply the specified padding strategy
     switch (paddingType) {
