@@ -4,6 +4,46 @@ Made with ❤️ by C. J. (Camilo & Jackie)
 Credit goes to [Dr. Pascal Peter](https://www.mia.uni-saarland.de/peter/index.shtml) who delivered this awesome course
 and our tutor: Sivakumaran Harishanth. 
 
+## Image-Processing Features
+### Diffusion-Algorithms
+- [x] **Homogeneous Diffusion**
+- [ ] Nonlinear Isotropic Diffusion
+  - [ ] Perona-Malik Filter
+  - [ ] Other ${g(|\nabla u|^2)}$ diffusivity functions
+- [ ] Nonlinear Anisotropic Diffusion
+  - [ ] Edge-Enhancing Anisotropic Diffusion
+  - [ ] Coherence-Enhancing Anisotropic Diffusion
+- [ ] Variational Methods
+  - [ ] TV Regularisation, Primal–Dual Methods
+  - [ ] Homogeneous Smoothing
+  - [ ] Isotropic Non-Linear Smoothing
+  - [ ] Anisotropic Linear Smoothing (similar to Optic-Flow Anisotropic Image-driven)
+  - [ ] Anisotropic Non-Linear Smoothing
+  - [ ] Mumford-Shah Functional
+    - [ ] Ambrosio-Tortorelli Approximation
+- [ ] Vector- and Matrix-Valued Images
+      
+### Image Sequence Analysis
+- [ ] Optic-Flow
+  - [ ] Homogeneous
+  - [ ] Isotropic Image-driven
+  - [ ] Anisotropic Image-driven
+  - [ ] Isotropic Flow-driven
+  - [ ] Anisotropic Flow-driven
+    
+### Morphology
+- [ ] Osmosis
+- [ ] Classical Discrete-Scale Morphology
+  - [ ] Dilation / Erosion
+  - [ ] Opening / Closing
+  - [ ] Shock Filter
+- [ ] Curvature-Based Morphology
+  - [ ] Mean Curvature Motion
+  - [ ] Self-Snakes and Active Contours
+- [ ] Backward Parabolic PDEs and M-smoothers
+- [ ] PDE-Based Image Compression
+- [ ] PDEs with learnable Hyperparameters
+
 ## Quests
 ### Main Story
 * [Render markdown](https://github.com/remarkjs/react-markdown)
