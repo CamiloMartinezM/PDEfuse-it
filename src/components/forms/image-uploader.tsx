@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import DiffusionAlgorithmSettings, { algorithmFunctions } from './diffusion-algorithm-settings';
+import { getBaseName } from '../../core/utils/hashing';
 
 const ImageUploader = () => {
     // Image-Editor variables
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [uploadedImages, setUploadedImages] = useState<{ name: string; dataUrl: string; }[]>([]);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
+    const [selectedClassicCVImage, setSelectedClassicCVImage] = useState<string | null>(null)
+
+    // Available public images for testing
+    const imagesContext = (require as any).context('../../../public/test_images', false, /\.png$/);
+    const availableImages = imagesContext.keys().map(imagesContext);
 
     // Image-Display-Area variables
     const [comparisonMode, setComparisonMode] = useState('side-by-side');
@@ -79,6 +85,13 @@ const ImageUploader = () => {
 
     /* Image-Editor functions */
 
+    const handleImageSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedFilename = e.target.value;
+        setSelectedImage(selectedFilename);
+        setSelectedClassicCVImage(selectedFilename);
+        setProcessedImage(null); // Clear the processed image
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const files = Array.from(e.target.files); // Convert FileList to Array
@@ -100,7 +113,8 @@ const ImageUploader = () => {
                             // If no image is currently selected, select the first new image
                             if (!selectedImage && loadedImages.length > 0) {
                                 setSelectedImage(loadedImages[0].dataUrl);
-                                setProcessedImage(null);
+                                setProcessedImage(null); // Clear the processed image
+                                setSelectedClassicCVImage(null); // Clear the classic CV image selection
                             }
                         }
                     }
@@ -185,11 +199,33 @@ const ImageUploader = () => {
             <div className="container" style={{ display: 'flex' }}>
                 <div className="control-panel" style={{ display: 'flex', flexDirection: 'row' }}>
                     <div>
+                        {/* Listbox for selecting an image */}
+                        <div className="image-selector" style={{ display: 'flex', flexDirection: 'column' }}>
+                            <label htmlFor="image-selection">Use a classic Computer Vision test image:</label>
+                            <select
+                                id="image-selection"
+                                onChange={handleImageSelection}
+                                value={selectedClassicCVImage || ""}
+                            >
+                                <option value="">Select an image</option>
+                                {availableImages.map((filename: string, index: number) => (
+                                    <option key={index} value={filename}>
+                                        {/* This regex will match the base file name without the hash and extension */}
+                                        {getBaseName(filename, "static\\/media\\/(.+?)\\.[a-f0-9]+\\.\\w+")}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="empty-space"></div>
+                        <label htmlFor="image-selection">Or upload your own:</label>
+
                         <div className="images-section" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             {uploadedImages.map((img, index) => (
                                 <div key={index} onClick={() => {
                                     setSelectedImage(img.dataUrl);
                                     setProcessedImage(null); // Clear the processed image
+                                    setSelectedClassicCVImage(null); // Clear the classic CV image selection
                                 }} style={{ cursor: 'pointer' }}>
                                     {img.name}
                                 </div>
@@ -255,17 +291,27 @@ const ImageUploader = () => {
                         onMouseLeave={resetSlider}
                         onMouseEnter={() => setIsMouseOver(true)} // When the mouse enters the area
                     >
-                        {(selectedImage && processedImage) ? (
+                        {(selectedImage) ? (
                             <>
                                 {comparisonMode === 'side-by-side' ? (
                                     <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
                                         <img src={selectedImage} alt="Uploaded Preview" style={{ maxWidth: '50%', height: '300px' }} />
-                                        <img src={processedImage} alt="Processed Upload" style={{ maxWidth: '50%', height: '300px' }} />
+                                        {/* Show processed image if available, otherwise show the same selected image */}
+                                        {processedImage ? (
+                                            <img src={processedImage} alt="Processed Upload" style={{ maxWidth: '50%', height: '300px' }} />
+                                        ) : (
+                                            <img src={selectedImage} alt="Uploaded Preview" style={{ maxWidth: '50%', height: '300px' }} />
+                                        )}
                                     </div>
                                 ) : (
                                     <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', maxWidth: '600px', height: '300px', margin: 'auto' }}>
                                         <img src={selectedImage} alt="Original" style={{ position: 'absolute', width: '100%', height: '100%', clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }} />
-                                        <img src={processedImage} alt="Processed" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
+                                        {/* Show processed image if available, otherwise show the same selected image */}
+                                        {processedImage ? (
+                                            <img src={processedImage} alt="Processed" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
+                                        ) : (
+                                            <img src={selectedImage} alt="Original" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
+                                        )}
                                         <div className="slider-bar" style={{
                                             position: 'absolute',
                                             top: '0',
