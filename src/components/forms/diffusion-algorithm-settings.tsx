@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InputField } from "./input-field";
-import { processImageWithHomogeneousDiffusion } from '../../filters/homogeneous-diffusion';
+import { applyToImageData } from '../../core/diffusion-filters/homogeneous-diffusion';
 
 /* Custom Types */
 
@@ -41,7 +41,7 @@ const algorithms: Algorithm[] = [
 ];
 
 export const algorithmFunctions = {
-    'Homogeneous Diffusion': processImageWithHomogeneousDiffusion,
+    'Homogeneous Diffusion': applyToImageData,
 };
   
 export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProps> = ({ onApply, onAlgorithmChange }) => {  
