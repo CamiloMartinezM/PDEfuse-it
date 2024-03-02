@@ -1,20 +1,21 @@
 import { useEffect, useRef } from "react";
 import PageLayout from "../components/page-layout";
 import "./home-page.css";
-import { Square, getPath, getRotationMatrix, transformShape } from "../utils/2d/shapes";
+import { getRotationMatrix } from "../utils/2d/shape";
+import { Arrow, getCirclePath } from "../utils/2d/shapes";
 
 function draw(ctx: CanvasRenderingContext2D) {
     // blue rect
     // clear the canvas
-    ctx.clearRect(0, 0, 150, 150);
-    const time = new Date();
+    // ctx.clearRect(0, 0, 150, 150);
+    // const time = new Date();
 
-    const angle =((2 * Math.PI) / 6) * time.getSeconds() +
-    ((2 * Math.PI) / 6000) * time.getMilliseconds();
+    // const angle =((2 * Math.PI) / 6) * time.getSeconds() +
+    // ((2 * Math.PI) / 6000) * time.getMilliseconds();
 
-    const square = new Square(25);
-    const rotatedSquare = transformShape(getRotationMatrix(angle), square);
-    ctx.fill(getPath(75, 75, rotatedSquare));
+    // const square = new Square(25);
+    // const rotatedSquare = transformShape(getRotationMatrix(angle), square);
+    // ctx.fill(getPath(75, 75, rotatedSquare));
 
     
     // grey rect
@@ -51,22 +52,52 @@ function HomePage() {
                 console.error("Cannot get 2d context from canvas!");
             } else {
 
+                // const square = new Square(25);
+                // ctx.fillStyle = 'black';
+                // ctx.fill(square.getPath([25, 25]));
+
+                // ctx.fillStyle = 'blue';
+                // ctx.fill(getCirclePath(25, 25));
+
+                // ctx.fillStyle = 'red';
+                // ctx.fill(getCirclePath(0, 0));
+
+                // const rotated = square.transform(getRotationMatrix(Math.PI / 4));
+                // ctx.fillStyle = 'green';
+                // ctx.fill(rotated.getPath([25, 25]));
+
+                
+
+
                 const loop = () => {
-                    // blue rect
                     // clear the canvas
-                    ctx.clearRect(0, 0, 150, 150);
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    const shape = new Arrow();
+
+                    // rotating square animation
+                    // get angle from time
                     const time = new Date();
-                
-                    const angle =((2 * Math.PI) / 6) * time.getSeconds() +
-                    ((2 * Math.PI) / 6000) * time.getMilliseconds();
-                
-                    const square = new Square(25);
-                    const rotatedSquare = transformShape(getRotationMatrix(angle), square);
-                    ctx.fill(getPath(75, 75, rotatedSquare));
+                    const angle = ((2 * Math.PI) / 6) * time.getSeconds() +
+                        ((2 * Math.PI) / 6000) * time.getMilliseconds();
+                    
+
+                    // get the black rotated square
+                    const rotatedShape = shape.transform(getRotationMatrix(angle));
+                    ctx.fillStyle = 'black';
+                    ctx.fill(rotatedShape.getPath([75,75]));
+                    ctx.fillStyle = 'red';
+                    ctx.fill(getCirclePath(75, 75));
+
                     window.requestAnimationFrame(loop);
+                    // setTimeout(() => {
+                        
+                    //     window.requestAnimationFrame(loop);
+                    // }, 1000); // Adjust the delay time (in milliseconds desired
+    
                 }
                 
                 window.requestAnimationFrame(loop);
+
                 
             }
         }
