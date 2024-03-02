@@ -9,9 +9,9 @@ export const getCirclePath = (x: number, y: number, radius: number = 2): Path2D 
 export class Arrow extends Shape {
     constructor(
         theta: number = Math.PI / 4,
-        whead: number = 20,
-        wtail: number = 30,
-        htail: number = 20
+        whead: number = 5,
+        wtail: number = 5,
+        htail: number = 5
     ) {
         const hhead = whead * Math.tan(theta) * 2;
         const width = whead + wtail;
@@ -25,12 +25,12 @@ export class Arrow extends Shape {
         ) throw new Error('Invalid arrow parameters');
         
         super([
-            [width / 2 - whead, hhead / 2],
-            [width / 2 - whead, (hhead - htail) / 2],
+            [whead - width / 2, hhead / 2],
+            [whead - width / 2, (hhead - htail) / 2],
             [width / 2, (hhead - htail) / 2],
             [width / 2, -(hhead - htail) / 2],
-            [width / 2 - whead, -(hhead - htail) / 2],
-            [width / 2 - whead, -hhead / 2],
+            [whead - width / 2, -(hhead - htail) / 2],
+            [whead - width / 2, -hhead / 2],
             [-width / 2, 0],
         ])
     }
