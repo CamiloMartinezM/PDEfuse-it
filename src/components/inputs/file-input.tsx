@@ -2,7 +2,7 @@ import { ChangeEventHandler } from "react"
 
 export type FileInputProps = {
     onChange: ChangeEventHandler<HTMLInputElement>
-} 
+}
 
 export function FileInput({ onChange }: FileInputProps) {
     return (

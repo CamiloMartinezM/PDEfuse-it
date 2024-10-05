@@ -3,7 +3,7 @@ import { applyColorInversion, applyExposure, applyFC, applyGamma, applyOffset, a
 import { getBaseName } from '../../core/utils/hashing';
 import DiffusionAlgorithmSettings, { findAlgorithmByName } from './diffusion-algorithm-settings';
 
-const ImageUploader = () => {
+const ImageEditor = () => {
     // Image-Editor variables
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [uploadedImages, setUploadedImages] = useState<{ name: string; dataUrl: string; }[]>([]);
@@ -244,7 +244,6 @@ const ImageUploader = () => {
 
     return (
         <div>
-            <h3 className="text-muted">Test out Homogeneous diffusion!</h3>
             <div className="container" style={{ display: 'flex' }}>
                 <div className="control-panel" style={{ display: 'flex', flexDirection: 'row' }}>
                     <div>
@@ -402,4 +401,4 @@ const ImageUploader = () => {
     );
 };
 
-export default ImageUploader;
+export default ImageEditor;

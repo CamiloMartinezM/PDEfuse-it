@@ -1,20 +1,18 @@
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
+    Route,
+    BrowserRouter as Router,
+    Routes,
 } from 'react-router-dom';
-import HomePage from './pages/home-page';
-import HomogeneousDiffusionDemoPage from './pages/homodiff-demo-page';
+import DiffusionDemoPage from './pages/home-page';
 
 const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/demo/homo" element={<HomogeneousDiffusionDemoPage />} />
-      </Routes>
-    </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<DiffusionDemoPage />} />
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;
