@@ -25,3 +25,6 @@ yarn-error.log*
 # unwanted images
 *.pgm
 *.ppm
+
+# local files
+*.py
