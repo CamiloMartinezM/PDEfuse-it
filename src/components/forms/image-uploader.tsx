@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import DiffusionAlgorithmSettings, { algorithmFunctions } from './diffusion-algorithm-settings';
+import React, { useCallback, useState } from 'react';
+import { applyExposure, applyGamma, applySRGB, applyOffset, normalizeImage, rgbToGrayscale, applyColorInversion, applyFC } from '../../core/images/image-helpers';
 import { getBaseName } from '../../core/utils/hashing';
+import DiffusionAlgorithmSettings, { algorithmFunctions } from './diffusion-algorithm-settings';
 
 const ImageUploader = () => {
     // Image-Editor variables
@@ -8,6 +9,10 @@ const ImageUploader = () => {
     const [uploadedImages, setUploadedImages] = useState<{ name: string; dataUrl: string; }[]>([]);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
     const [selectedClassicCVImage, setSelectedClassicCVImage] = useState<string | null>(null)
+    const [exposure, setExposure] = useState(0);
+    const [offset, setOffset] = useState(0);
+    const [gamma, setGamma] = useState(1);
+    const [isInverted, setIsInverted] = useState(false);
 
     // Available public images for testing
     const imagesContext = (require as any).context('../../../public/test_images', false, /\.png$/);
@@ -165,33 +170,75 @@ const ImageUploader = () => {
         if (fileInput) fileInput.value = '';
     }
 
-    function handleConvertToGrayscale(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        throw new Error('Function not implemented.');
-    }
+    const applyImageProcessing = useCallback((processingFunc: (imageData: ImageData) => ImageData) => {
+        if (!selectedImage) return;
 
-    function handleNormalizeImage(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        throw new Error('Function not implemented.');
-    }
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
 
-    function handleReset(event: React.MouseEvent<HTMLButtonElement>): void {
-        throw new Error('Function not implemented.');
-    }
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx?.drawImage(img, 0, 0);
+            const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
 
-    function handleFC(event: React.MouseEvent<HTMLButtonElement>): void {
-        throw new Error('Function not implemented.');
-    }
+            if (imageData) {
+                const processedImageData = processingFunc(imageData);
+                ctx?.putImageData(processedImageData, 0, 0);
+                setProcessedImage(canvas.toDataURL());
+            }
+        };
 
-    function handleToggle(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        throw new Error('Function not implemented.');
-    }
+        img.src = selectedImage;
+    }, [selectedImage]);
 
-    function handleSRGB(event: React.MouseEvent<HTMLButtonElement>): void {
-        throw new Error('Function not implemented.');
-    }
+    const handleConvertToGrayscale = () => {
+        applyImageProcessing(rgbToGrayscale);
+    };
 
-    function handleGamma(event: React.MouseEvent<HTMLButtonElement>): void {
-        throw new Error('Function not implemented.');
-    }
+    const handleNormalizeImage = () => {
+        applyImageProcessing(normalizeImage);
+    };
+
+    const handleReset = () => {
+        setProcessedImage(null);
+        setExposure(0);
+        setOffset(0);
+        setGamma(1);
+        setIsInverted(false);
+    };
+
+    const handleFC = () => {
+        applyImageProcessing((imageData) => applyFC(imageData));
+    };
+
+    const handleToggle = () => {
+        setIsInverted(!isInverted);
+        applyImageProcessing(applyColorInversion);
+    };
+
+    const handleSRGB = () => {
+        applyImageProcessing(applySRGB);
+    };
+
+    const handleExposureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newExposure = parseFloat(e.target.value);
+        setExposure(newExposure);
+        applyImageProcessing((imageData) => applyExposure(imageData, newExposure));
+    };
+
+    const handleOffsetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newOffset = parseFloat(e.target.value);
+        setOffset(newOffset);
+        applyImageProcessing((imageData) => applyOffset(imageData, newOffset));
+    };
+
+    const handleGammaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newGamma = parseFloat(e.target.value);
+        setGamma(newGamma);
+        applyImageProcessing((imageData) => applyGamma(imageData, newGamma));
+    };
 
     return (
         <div>
@@ -251,16 +298,16 @@ const ImageUploader = () => {
                             {/* Sliders for Exposure, Offset, Gamma */}
                             <div className="sliders">
                                 <label htmlFor="exposure">Exposure</label>
-                                <input type="range" id="exposure" name="exposure" min="-100" max="100" />
+                                <input type="range" id="exposure" name="exposure" min="-2" max="2" step="0.1" value={exposure} onChange={handleExposureChange} />
 
                                 <div className="half-sliders">
                                     <div>
                                         <label htmlFor="offset">Offset</label>
-                                        <input type="range" id="offset" name="offset" min="-100" max="100" />
+                                        <input type="range" id="offset" name="offset" min="-128" max="128" value={offset} onChange={handleOffsetChange} />
                                     </div>
                                     <div>
                                         <label htmlFor="gamma">Gamma</label>
-                                        <input type="range" id="gamma" name="gamma" min="0.1" max="3" />
+                                        <input type="range" id="gamma" name="gamma" min="0.1" max="3" step="0.1" value={gamma} onChange={handleGammaChange} />
                                     </div>
                                 </div>
                             </div>
@@ -278,7 +325,6 @@ const ImageUploader = () => {
 
                             <div className="button-group">
                                 <button onClick={handleSRGB}>sRGB</button>
-                                <button onClick={handleGamma}>Gamma</button>
                                 <button onClick={handleFC}>FC</button>
                                 <button onClick={handleToggle}>+/-</button>
                             </div>
