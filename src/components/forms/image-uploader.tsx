@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { applyExposure, applyGamma, applySRGB, applyOffset, normalizeImage, rgbToGrayscale, applyColorInversion, applyFC } from '../../core/images/image-helpers';
+import { applyColorInversion, applyExposure, applyFC, applyGamma, applyOffset, applySRGB, normalizeImage, rgbToGrayscale } from '../../core/images/image-helpers';
 import { getBaseName } from '../../core/utils/hashing';
-import DiffusionAlgorithmSettings, { algorithmFunctions } from './diffusion-algorithm-settings';
+import DiffusionAlgorithmSettings, { findAlgorithmByName } from './diffusion-algorithm-settings';
 
 const ImageUploader = () => {
     // Image-Editor variables
@@ -45,8 +45,13 @@ const ImageUploader = () => {
 
     /* Image-Processing-Algorithm functions */
 
-    const handleAlgorithmChange = (algorithmName: string, defaultParams: any) => {
+    const handleAlgorithmChange = (algorithmName: string) => {
         setSelectedAlgorithm(algorithmName);
+        const algorithm = findAlgorithmByName(algorithmName);
+        const defaultParams = algorithm ? algorithm.parameters.reduce((acc, param) => {
+            acc[param.label] = typeof param.value === 'number' ? param.value : parseFloat(param.value);
+            return acc;
+        }, {} as Record<string, number>) : {};
         setAlgorithmParams(defaultParams);
     };
 
@@ -56,14 +61,7 @@ const ImageUploader = () => {
     const handleAlgorithmApplication = () => {
         if (!selectedImage || !selectedAlgorithm) return;
 
-        // Use the selectedAlgorithm and algorithmParams to apply the algorithm
-        const processFunction = algorithmFunctions[selectedAlgorithm as keyof typeof algorithmFunctions];
-
-        if (!processFunction) {
-            console.error(`No processing function found for algorithm: ${selectedAlgorithm}`);
-            return;
-        }
-
+        const algorithm = findAlgorithmByName(selectedAlgorithm);
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const imageElement = new Image();
@@ -71,10 +69,10 @@ const ImageUploader = () => {
         imageElement.onload = () => {
             canvas.width = imageElement.width;
             canvas.height = imageElement.height;
-            if (ctx) {
+            if (ctx && algorithm) {
                 ctx.drawImage(imageElement, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const processedImageData = processFunction(imageData, ...Object.values<number | undefined>(algorithmParams));
+                const processedImageData = algorithm.applyFunction(imageData, ...Object.values<number | undefined>(algorithmParams));
 
                 // Draw the processed image data back onto the canvas
                 ctx.putImageData(processedImageData, 0, 0);
@@ -170,6 +168,10 @@ const ImageUploader = () => {
         if (fileInput) fileInput.value = '';
     }
 
+    /**
+     * Applies the given image processing function to the selected image and updates the processed image state
+     * @param processingFunc The image processing function to apply
+     */
     const applyImageProcessing = useCallback((processingFunc: (imageData: ImageData) => ImageData) => {
         if (!selectedImage) return;
 
@@ -388,8 +390,11 @@ const ImageUploader = () => {
                     </div>
 
                     <DiffusionAlgorithmSettings
-                        onApply={handleAlgorithmApplication}
                         onAlgorithmChange={handleAlgorithmChange}
+                        onApply={(_, params) => {
+                            setAlgorithmParams(params);
+                            handleAlgorithmApplication();
+                        }}
                     />
                 </div>
             </div>

@@ -16,7 +16,7 @@ type AlgorithmParameter = {
     step?: string;
 };
 
-type Algorithm = {
+export type Algorithm = {
     name: string;
     parameters: AlgorithmParameter[];
     descriptionFile: string;
@@ -28,9 +28,10 @@ type DiffusionAlgorithmSettingsProps = {
     onAlgorithmChange: (algorithmName: string, defaultParams: any) => void;
 };
 
-/* Available Diffusion-Algorithms */
-
-const algorithms: Algorithm[] = [
+/**
+ * List of available diffusion algorithms
+ */
+export const algorithms: Algorithm[] = [
     {
         name: 'Homogeneous Diffusion',
         parameters: [
@@ -54,11 +55,25 @@ const algorithms: Algorithm[] = [
     // Add more algorithms here
 ];
 
-export const algorithmFunctions = {
-    'Homogeneous Diffusion': applyHomogeneousDiffusion,
-    'Perona-Malik with Catte': applyPeronaMalikCatte,
+/**
+ * Find an algorithm by its name
+ * @param name The name of the algorithm
+ * @returns The algorithm object if found, otherwise undefined
+ */
+export const findAlgorithmByName = (name: string): Algorithm | undefined => {
+    const algorithm = algorithms.find(alg => alg.name === name);
+    if (!algorithm) {
+        console.error("Algorithm not found:", name);
+        return;
+    }
+    return algorithm;
 };
 
+/**
+ * Component for selecting and applying diffusion algorithms
+ * @param param0 Props for the component
+ * @returns The DiffusionAlgorithmSettings component
+ */
 export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProps> = ({ onApply, onAlgorithmChange }) => {
     const [selectedAlgorithm, setSelectedAlgorithm] = useState<Algorithm>(algorithms[0]);
     const [parameters, setParameters] = useState<AlgorithmParameter[]>([]);
@@ -85,7 +100,7 @@ export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProp
     };
 
     const handleAlgorithmChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newAlgorithm = algorithms.find(alg => alg.name === e.target.value);
+        const newAlgorithm = findAlgorithmByName(e.target.value);
         if (newAlgorithm) {
             setSelectedAlgorithm(newAlgorithm);
             onAlgorithmChange(newAlgorithm.name, newAlgorithm.parameters.reduce((acc, param) => {
@@ -106,7 +121,7 @@ export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProp
     const handleApply = () => {
         // Construct parameter object to pass to the onApply callback
         const params: { [key: string]: any } = parameters.reduce((acc, param) => {
-            acc[param.label] = param.value;
+            acc[param.label] = typeof param.value === 'number' ? param.value : parseFloat(param.value);
             return acc;
         }, {} as { [key: string]: any });
 
