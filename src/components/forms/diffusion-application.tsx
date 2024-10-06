@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { applyColorInversion, applyExposure, applyFC, applyGamma, applyOffset, applySRGB, normalizeImage, rgbToGrayscale } from '../../core/images/image-helpers';
 import { getBaseName } from '../../core/utils/hashing';
 import DiffusionAlgorithmSettings, { findAlgorithmByName } from './diffusion-algorithm-settings';
 
-const ImageEditor = () => {
+const DiffusionApplication = () => {
     // Image-Editor variables
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [uploadedImages, setUploadedImages] = useState<{ name: string; dataUrl: string; }[]>([]);
@@ -22,6 +22,8 @@ const ImageEditor = () => {
     const [comparisonMode, setComparisonMode] = useState('side-by-side');
     const [sliderPosition, setSliderPosition] = useState(50); // For the juxtaposed mode
     const [isMouseOver, setIsMouseOver] = useState(false);
+    const [zoom, setZoom] = useState(1);
+    const imageRef = useRef<HTMLImageElement>(null);
 
     // Image-Processing-Algorithm variables
     const [selectedAlgorithm, setSelectedAlgorithm] = useState<string | null>(null);
@@ -41,6 +43,18 @@ const ImageEditor = () => {
 
     const resetSlider = () => {
         setIsMouseOver(false); // Mouse has left the image
+    };
+
+    const handleZoomIn = () => {
+        setZoom(prevZoom => prevZoom * 1.2);
+    };
+
+    const handleZoomOut = () => {
+        setZoom(prevZoom => prevZoom / 1.2);
+    };
+
+    const handleZoomReset = () => {
+        setZoom(1);
     };
 
     /* Image-Processing-Algorithm functions */
@@ -243,101 +257,101 @@ const ImageEditor = () => {
     };
 
     return (
-        <div>
-            <div className="container" style={{ display: 'flex' }}>
-                <div className="control-panel" style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div>
-                        {/* Listbox for selecting an image */}
-                        <div className="image-selector" style={{ display: 'flex', flexDirection: 'column' }}>
-                            <label htmlFor="image-selection">Use a classic Computer Vision test image:</label>
-                            <select
-                                id="image-selection"
-                                onChange={handleImageSelection}
-                                value={selectedClassicCVImage || ""}
-                            >
-                                <option value="">Select an image</option>
-                                {availableImages.map((filename: string, index: number) => (
-                                    <option key={index} value={filename}>
-                                        {/* This regex will match the base file name without the hash and extension */}
-                                        {getBaseName(filename, "static\\/media\\/(.+?)\\.[a-f0-9]+\\.\\w+")}
-                                    </option>
-                                ))}
-                            </select>
+        <div className="diffusion-application-section">
+            <div className="image-editor-section">
+                {/* Listbox for selecting an image */}
+                <div className="image-selector">
+                    <label htmlFor="image-selection">Use a classic Computer Vision test image:</label>
+                    <select
+                        id="image-selection"
+                        onChange={handleImageSelection}
+                        value={selectedClassicCVImage || ""}
+                    >
+                        <option value="">Select an image</option>
+                        {availableImages.map((filename: string, index: number) => (
+                            <option key={index} value={filename}>
+                                {/* This regex will match the base file name without the hash and extension */}
+                                {getBaseName(filename, "static\\/media\\/(.+?)\\.[a-f0-9]+\\.\\w+")}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="empty-space"></div>
+                <label htmlFor="image-selection">Or upload your own:</label>
+
+                <div className="images-section">
+                    {uploadedImages.map((img, index) => (
+                        <div key={index} onClick={() => {
+                            setSelectedImage(img.dataUrl);
+                            setProcessedImage(null); // Clear the processed image
+                            setSelectedClassicCVImage(null); // Clear the classic CV image selection
+                        }} style={{ cursor: 'pointer' }}>
+                            {img.name}
                         </div>
+                    ))}
+                </div>
 
-                        <div className="empty-space"></div>
-                        <label htmlFor="image-selection">Or upload your own:</label>
+                {/* File manipulation buttons */}
+                <div className="button-group">
+                    <input
+                        type="file"
+                        id="file-upload"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        multiple // Allows multiple file selection
+                    />
+                    <button onClick={handleDeleteImage}>Delete Image</button>
+                </div>
+                <div className="empty-space"></div>
 
-                        <div className="images-section" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                            {uploadedImages.map((img, index) => (
-                                <div key={index} onClick={() => {
-                                    setSelectedImage(img.dataUrl);
-                                    setProcessedImage(null); // Clear the processed image
-                                    setSelectedClassicCVImage(null); // Clear the classic CV image selection
-                                }} style={{ cursor: 'pointer' }}>
-                                    {img.name}
-                                </div>
-                            ))}
-                        </div>
+                <div className="tone-mapping" >
+                    <h3>Tonemapping</h3>
 
-                        {/* File manipulation buttons */}
-                        <div className="button-group">
-                            <input
-                                type="file"
-                                id="file-upload"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                multiple // Allows multiple file selection
-                            />
-                            <button onClick={handleDeleteImage}>Delete Image</button>
-                        </div>
-                        <div className="empty-space"></div>
+                    {/* Sliders for Exposure, Offset, Gamma */}
+                    <div className="sliders">
+                        <label htmlFor="exposure">Exposure</label>
+                        <input type="range" id="exposure" name="exposure" min="-2" max="2" step="0.1" value={exposure} onChange={handleExposureChange} />
 
-                        <div className="tone-mapping" >
-                            <h3>Tonemapping</h3>
-
-                            {/* Sliders for Exposure, Offset, Gamma */}
-                            <div className="sliders">
-                                <label htmlFor="exposure">Exposure</label>
-                                <input type="range" id="exposure" name="exposure" min="-2" max="2" step="0.1" value={exposure} onChange={handleExposureChange} />
-
-                                <div className="half-sliders">
-                                    <div>
-                                        <label htmlFor="offset">Offset</label>
-                                        <input type="range" id="offset" name="offset" min="-128" max="128" value={offset} onChange={handleOffsetChange} />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="gamma">Gamma</label>
-                                        <input type="range" id="gamma" name="gamma" min="0.1" max="3" step="0.1" value={gamma} onChange={handleGammaChange} />
-                                    </div>
-                                </div>
+                        <div className="half-sliders">
+                            <div>
+                                <label htmlFor="offset">Offset</label>
+                                <input type="range" id="offset" name="offset" min="-128" max="128" value={offset} onChange={handleOffsetChange} />
                             </div>
-
-                            <div className="empty-space"></div>
-
-                            {/* Buttons for image tone mapping */}
-                            <div className="button-group">
-                                <button onClick={handleConvertToGrayscale}>Convert to Grayscale</button>
-                                <button onClick={handleNormalizeImage}>Normalize</button>
-                                <button onClick={handleReset}>Reset</button>
-                            </div>
-
-                            <div className="empty-space"></div>
-
-                            <div className="button-group">
-                                <button onClick={handleSRGB}>sRGB</button>
-                                <button onClick={handleFC}>FC</button>
-                                <button onClick={handleToggle}>+/-</button>
+                            <div>
+                                <label htmlFor="gamma">Gamma</label>
+                                <input type="range" id="gamma" name="gamma" min="0.1" max="3" step="0.1" value={gamma} onChange={handleGammaChange} />
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        className="image-display-area"
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={resetSlider}
-                        onMouseEnter={() => setIsMouseOver(true)} // When the mouse enters the area
-                    >
+                    <div className="empty-space"></div>
+
+                    {/* Buttons for image tone mapping */}
+                    <div className="button-group">
+                        <button onClick={handleConvertToGrayscale}>Convert to Grayscale</button>
+                        <button onClick={handleNormalizeImage}>Normalize</button>
+                        <button onClick={handleReset}>Reset</button>
+                    </div>
+
+                    <div className="empty-space"></div>
+
+                    <div className="button-group">
+                        <button onClick={handleSRGB}>sRGB</button>
+                        <button onClick={handleFC}>FC</button>
+                        <button onClick={handleToggle}>+/-</button>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                className="image-display-area"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={resetSlider}
+                onMouseEnter={() => setIsMouseOver(true)} // When the mouse enters the area
+            >
+                <div className="image-container">
+                    <div className="image-wrapper" style={{ transform: `scale(${zoom})` }}>
                         {(selectedImage) ? (
                             <>
                                 {comparisonMode === 'side-by-side' ? (
@@ -370,35 +384,44 @@ const ImageEditor = () => {
                                         }}></div>
                                     </div>
                                 )}
-                                <div className="comparison-button-group" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
-                                    <button
-                                        onClick={() => setComparisonMode('side-by-side')}
-                                        className={comparisonMode === 'side-by-side' ? 'active' : ''}
-                                    >
-                                        Side-by-side comparison
-                                    </button>
-                                    <button
-                                        onClick={() => setComparisonMode('juxtaposed')}
-                                        className={comparisonMode === 'juxtaposed' ? 'active' : ''}
-                                    >
-                                        Juxtaposed-comparison
-                                    </button>
-                                </div>
                             </>
                         ) : null}
                     </div>
-
-                    <DiffusionAlgorithmSettings
-                        onAlgorithmChange={handleAlgorithmChange}
-                        onApply={(_, params) => {
-                            setAlgorithmParams(params);
-                            handleAlgorithmApplication();
-                        }}
-                    />
                 </div>
+
+                <div className="comparison-button-group">
+                    <button
+                        onClick={() => setComparisonMode('side-by-side')}
+                        className={comparisonMode === 'side-by-side' ? 'active' : ''}
+                    >
+                        Side-by-side comparison
+                    </button>
+                    <button
+                        onClick={() => setComparisonMode('juxtaposed')}
+                        className={comparisonMode === 'juxtaposed' ? 'active' : ''}
+                    >
+                        Juxtaposed-comparison
+                    </button>
+                </div>
+
+                <div className="zoom-controls">
+                    <button onClick={handleZoomIn}>+</button>
+                    <button onClick={handleZoomOut}>-</button>
+                    <button onClick={handleZoomReset}>Reset</button>
+                </div>
+            </div>
+
+            <div className="algorithm-settings-section">
+                <DiffusionAlgorithmSettings
+                    onAlgorithmChange={handleAlgorithmChange}
+                    onApply={(_, params) => {
+                        setAlgorithmParams(params);
+                        handleAlgorithmApplication();
+                    }}
+                />
             </div>
         </div>
     );
 };
 
-export default ImageEditor;
+export default DiffusionApplication;

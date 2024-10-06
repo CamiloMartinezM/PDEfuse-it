@@ -8,13 +8,11 @@ interface PageLayoutProps {
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
     return (
-        <div className="page-layout col-lg-10 mx-auto p-3 py-md-5">
+        <div className="col-lg-10 mx-auto p-3 py-md-5 page-layout">
             <PageHeader />
-            <div>
-                <main className="main-content">
-                    {children}
-                </main>
-            </div>
+            <main className="main-content">
+                {children}
+            </main>
             <PageFooter />
         </div>
     );

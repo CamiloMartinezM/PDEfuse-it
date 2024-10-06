@@ -1,4 +1,4 @@
-import ImageEditor from "../components/forms/image-editor";
+import DiffusionApplication from "../components/forms/diffusion-application";
 import PageLayout from "../components/page-layout";
 
 export default function DiffusionDemoPage() {
@@ -6,8 +6,8 @@ export default function DiffusionDemoPage() {
         <PageLayout>
             <div className="diffusion-demo-container">
                 <h1 className="page-title">Test out a Diffusion Algorithm!</h1>
-                <div className="image-editor-section">
-                    <ImageEditor />
+                <div className="diffusion-application-section">
+                    <DiffusionApplication />
                 </div>
             </div>
         </PageLayout>

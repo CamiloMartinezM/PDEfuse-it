@@ -130,38 +130,36 @@ export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProp
     };
 
     return (
-        <div className="p-4 bg-white rounded shadow">
-            <h2 className="text-2xl font-bold mb-4">Diffusion Algorithm</h2>
-            <select
-                className="w-full p-2 mb-4 border rounded"
-                value={selectedAlgorithm.name}
-                onChange={handleAlgorithmChange}
-            >
-                {algorithms.map((alg) => (
-                    <option key={alg.name} value={alg.name}>
-                        {alg.name}
-                    </option>
+        <div className="algorithm-settings">
+            <div className="algorithm-controls">
+                <h2>Diffusion Algorithm</h2>
+                <select
+                    value={selectedAlgorithm.name}
+                    onChange={handleAlgorithmChange}
+                >
+                    {algorithms.map((alg) => (
+                        <option key={alg.name} value={alg.name}>
+                            {alg.name}
+                        </option>
+                    ))}
+                </select>
+                {parameters.map((param, index) => (
+                    <InputField
+                        key={param.label}
+                        type={param.type}
+                        label={param.label}
+                        className="input-style-class"
+                        value={param.value}
+                        step={param.step}
+                        onChange={(e) => handleParameterChange(index, e.target.value)}
+                    />
                 ))}
-            </select>
-            {parameters.map((param, index) => (
-                <InputField
-                    key={param.label}
-                    type={param.type}
-                    label={param.label}
-                    className="input-style-class"
-                    value={param.value}
-                    step={param.step}
-                    onChange={(e) => handleParameterChange(index, e.target.value)}
-                />
-            ))}
-            <button
-                className="w-full p-2 mt-4 bg-blue-500 text-black rounded hover:bg-blue-600"
-                onClick={handleApply}
-            >
-                Apply {selectedAlgorithm.name}
-            </button>
-            <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-2">Description</h3>
+                <button onClick={handleApply}>
+                    Apply {selectedAlgorithm.name}
+                </button>
+            </div>
+            <div className="algorithm-description">
+                <h3>Description</h3>
                 <ReactMarkdown
                     remarkPlugins={[remarkMath]}
                     rehypePlugins={[rehypeKatex]}
