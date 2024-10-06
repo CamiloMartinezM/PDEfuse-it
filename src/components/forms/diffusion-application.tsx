@@ -411,7 +411,7 @@ const DiffusionApplication = () => {
                 </div>
             </div>
 
-            <div className="algorithm-settings-section">
+            <section className="algorithm-settings-section">
                 <DiffusionAlgorithmSettings
                     onAlgorithmChange={handleAlgorithmChange}
                     onApply={(_, params) => {
@@ -419,7 +419,7 @@ const DiffusionApplication = () => {
                         handleAlgorithmApplication();
                     }}
                 />
-            </div>
+            </section>
         </div>
     );
 };
