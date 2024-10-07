@@ -5,6 +5,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import { applyToImageData as applyHomogeneousDiffusion } from '../../core/diffusion-filters/homogeneous-diffusion';
 import { applyToImageData as applyPeronaMalikCatte } from '../../core/diffusion-filters/perona-malik-catte';
+import { applyToImageData as applyHomogeneousDiffusionInpainting } from '../../core/diffusion-filters/homogeneous-diffusion-inpainting';
 import { InputField } from "./input-field";
 
 /* Custom Types */
@@ -52,20 +53,44 @@ export const algorithms: Algorithm[] = [
         descriptionFile: 'perona-malik-catte.md',
         applyFunction: applyPeronaMalikCatte,
     },
+    {
+        name: 'Homogeneous Diffusion Inpainting',
+        parameters: [
+            { label: 'iterations', value: 10, type: 'number' },
+            { label: 'tau', value: 0.24, type: 'number' },
+        ],
+        descriptionFile: 'homogeneous-diffusion.md',
+        applyFunction: applyHomogeneousDiffusionInpainting,
+    },
     // Add more algorithms here
 ];
 
 /**
- * Find an algorithm by its name
- * @param name The name of the algorithm
+ * Find an algorithm by its name or index
+ * @param identifier The name or index of the algorithm
  * @returns The algorithm object if found, otherwise undefined
  */
-export const findAlgorithmByName = (name: string): Algorithm | undefined => {
-    const algorithm = algorithms.find(alg => alg.name === name);
-    if (!algorithm) {
-        console.error("Algorithm not found:", name);
-        return;
+export const findAlgorithm = (identifier: string | number): Algorithm | undefined => {
+    let algorithm: Algorithm | undefined;
+
+    if (typeof identifier === 'number') {
+        // If identifier is a number, treat it as an index
+        if (identifier >= 0 && identifier < algorithms.length) {
+            algorithm = algorithms[identifier];
+        } else {
+            console.error("Algorithm index out of range:", identifier);
+            return undefined;
+        }
+    } else {
+        // If identifier is a string, treat it as a name
+        algorithm = algorithms.find(alg => alg.name === identifier);
     }
+
+    if (!algorithm) {
+        console.error("Algorithm not found:", identifier);
+        return undefined;
+    }
+
     return algorithm;
 };
 
@@ -100,7 +125,7 @@ export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProp
     };
 
     const handleAlgorithmChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newAlgorithm = findAlgorithmByName(e.target.value);
+        const newAlgorithm = findAlgorithm(e.target.value);
         if (newAlgorithm) {
             setSelectedAlgorithm(newAlgorithm);
             onAlgorithmChange(newAlgorithm.name, newAlgorithm.parameters.reduce((acc, param) => {

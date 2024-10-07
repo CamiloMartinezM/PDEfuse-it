@@ -1,7 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { applyColorInversion, applyExposure, applyFC, applyGamma, applyOffset, applySRGB, normalizeImage, rgbToGrayscale } from '../../core/images/image-helpers';
+import { ImageBuffer, ImageType } from '../../core/images/ImageBuffer';
 import { getBaseName } from '../../core/utils/hashing';
-import DiffusionAlgorithmSettings, { findAlgorithmByName } from './diffusion-algorithm-settings';
+import DiffusionAlgorithmSettings, { findAlgorithm } from './diffusion-algorithm-settings';
 
 const DiffusionApplication = () => {
     // Image-Editor variables
@@ -13,6 +14,15 @@ const DiffusionApplication = () => {
     const [offset, setOffset] = useState(0);
     const [gamma, setGamma] = useState(1);
     const [isInverted, setIsInverted] = useState(false);
+    const [paintedAreas, setPaintedAreas] = useState<boolean[][]>([]);
+
+    // State variables for the paint tool
+    const [isPainting, setIsPainting] = useState(false);
+    const [paintSquareSize, setPaintSquareSize] = useState(50);
+    const [paintPosition, setPaintPosition] = useState({ x: 0, y: 0 });
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [isDrawingMode, setIsDrawingMode] = useState(false);
+    const [editedImage, setEditedImage] = useState<string | null>(null);
 
     // Available public images for testing
     const imagesContext = (require as any).context('../../../public/test_images', false, /\.png$/);
@@ -61,7 +71,7 @@ const DiffusionApplication = () => {
 
     const handleAlgorithmChange = (algorithmName: string) => {
         setSelectedAlgorithm(algorithmName);
-        const algorithm = findAlgorithmByName(algorithmName);
+        const algorithm = findAlgorithm(algorithmName);
         const defaultParams = algorithm ? algorithm.parameters.reduce((acc, param) => {
             acc[param.label] = typeof param.value === 'number' ? param.value : parseFloat(param.value);
             return acc;
@@ -73,9 +83,9 @@ const DiffusionApplication = () => {
      * This function will use selectedAlgorithm and algorithmParams to apply the selected algorithm
      */
     const handleAlgorithmApplication = () => {
-        if (!selectedImage || !selectedAlgorithm) return;
+        if (!editedImage || !selectedAlgorithm) return;
 
-        const algorithm = findAlgorithmByName(selectedAlgorithm);
+        const algorithm = findAlgorithm(selectedAlgorithm);
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const imageElement = new Image();
@@ -86,7 +96,24 @@ const DiffusionApplication = () => {
             if (ctx && algorithm) {
                 ctx.drawImage(imageElement, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const processedImageData = algorithm.applyFunction(imageData, ...Object.values<number | undefined>(algorithmParams));
+                let processedImageData;
+                if (algorithm.name === 'Homogeneous Diffusion Inpainting') {
+                    console.log("TE LA ENTIERRO");
+                    const mask = new ImageBuffer(canvas.width, canvas.height, ImageType.GRAYSCALE);
+                    for (let y = 0; y < canvas.height; y++) {
+                        for (let x = 0; x < canvas.width; x++) {
+                            mask.setPixel(x, y, [paintedAreas[y][x] ? 0 : 1]);
+                        }
+                    }
+
+                    processedImageData = algorithm.applyFunction(
+                        imageData,
+                        mask,
+                        ...Object.values<number | undefined>(algorithmParams)
+                    );
+                } else {
+                    processedImageData = algorithm.applyFunction(imageData, ...Object.values<number | undefined>(algorithmParams));
+                }
 
                 // Draw the processed image data back onto the canvas
                 ctx.putImageData(processedImageData, 0, 0);
@@ -97,7 +124,7 @@ const DiffusionApplication = () => {
             }
         };
 
-        imageElement.src = selectedImage; // This is the data URL of the uploaded image
+        imageElement.src = editedImage; // This is the data URL of the uploaded image
     };
 
     /* Image-Editor functions */
@@ -106,7 +133,16 @@ const DiffusionApplication = () => {
         const selectedFilename = e.target.value;
         setSelectedImage(selectedFilename);
         setSelectedClassicCVImage(selectedFilename);
-        setProcessedImage(null); // Clear the processed image
+        setProcessedImage(null);
+
+        // Load the selected image onto the canvas
+        loadImageOntoCanvas(selectedFilename);
+
+        // Load the first algorithm by default
+        const defaultAlgorithm = findAlgorithm(0);
+        if (defaultAlgorithm) {
+            handleAlgorithmChange(defaultAlgorithm.name);
+        }
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,6 +292,122 @@ const DiffusionApplication = () => {
         applyImageProcessing((imageData) => applyGamma(imageData, newGamma));
     };
 
+    /* Paint Tool functions */
+
+    useEffect(() => {
+        if (selectedImage) {
+            loadImageOntoCanvas(selectedImage);
+            // Initialize paintedAreas with false values
+            const img = new Image();
+            img.onload = () => {
+                setPaintedAreas(Array(img.height).fill(null).map(() => Array(img.width).fill(false)));
+            };
+            img.src = selectedImage;
+        }
+    }, [selectedImage]);
+
+    const loadImageOntoCanvas = (imageSrc: string) => {
+        const img = new Image();
+        img.onload = () => {
+            if (canvasRef.current) {
+                const canvas = canvasRef.current;
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx?.drawImage(img, 0, 0);
+                setEditedImage(canvas.toDataURL());
+                // Reset paintedAreas
+                setPaintedAreas(Array(img.height).fill(null).map(() => Array(img.width).fill(false)));
+            }
+        };
+        img.src = imageSrc;
+    };
+
+    const handleCanvasMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        if (isDrawingMode) {
+            setIsPainting(true);
+            const canvas = canvasRef.current;
+            if (canvas) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                setPaintPosition({ x, y });
+                paintSquare(x, y);
+            }
+        }
+    };
+
+    const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        if (isPainting && isDrawingMode) {
+            const canvas = canvasRef.current;
+            if (canvas) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                setPaintPosition({ x, y });
+                paintSquare(x, y);
+            }
+        }
+    };
+
+    const handleCanvasMouseUp = () => {
+        if (isPainting) {
+            setIsPainting(false);
+            updateEditedImage();
+        }
+    };
+
+    const paintSquare = (x: number, y: number) => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = 'black';
+                const startX = Math.max(0, x - paintSquareSize / 2);
+                const startY = Math.max(0, y - paintSquareSize / 2);
+                const width = Math.min(paintSquareSize, canvas.width - startX);
+                const height = Math.min(paintSquareSize, canvas.height - startY);
+                ctx.fillRect(startX, startY, width, height);
+
+                // Update paintedAreas
+                setPaintedAreas(prev => {
+                    const newPaintedAreas = [...prev];
+                    for (let i = Math.floor(startY); i < Math.floor(startY + height); i++) {
+                        for (let j = Math.floor(startX); j < Math.floor(startX + width); j++) {
+                            if (i < newPaintedAreas.length && j < newPaintedAreas[i].length) {
+                                newPaintedAreas[i][j] = true;
+                            }
+                        }
+                    }
+                    return newPaintedAreas;
+                });
+            }
+        }
+    };
+
+    const updateEditedImage = () => {
+        if (canvasRef.current) {
+            setEditedImage(canvasRef.current.toDataURL());
+        }
+    };
+
+    const handleSquareSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPaintSquareSize(Number(e.target.value));
+    };
+
+    const handleResetCanvas = () => {
+        if (selectedImage) {
+            loadImageOntoCanvas(selectedImage);
+            // Reset paintedAreas
+            setPaintedAreas(Array(canvasRef.current?.height || 0).fill(null).map(() => Array(canvasRef.current?.width || 0).fill(false)));
+        }
+    };
+
+
+    const toggleDrawingMode = () => {
+        setIsDrawingMode(!isDrawingMode);
+    };
+
     return (
         <div className="diffusion-application-section">
             <div className="image-editor-section">
@@ -342,6 +494,26 @@ const DiffusionApplication = () => {
                         <button onClick={handleToggle}>+/-</button>
                     </div>
                 </div>
+
+                <div className="paint-tool-controls">
+                    <h3>Paint Tool</h3>
+                    <div>
+                        <label htmlFor="square-size">Square Size: </label>
+                        <input
+                            type="range"
+                            id="square-size"
+                            min="10"
+                            max="100"
+                            value={paintSquareSize}
+                            onChange={handleSquareSizeChange}
+                        />
+                        <span>{paintSquareSize}px</span>
+                    </div>
+                    <button onClick={toggleDrawingMode}>
+                        {isDrawingMode ? 'Disable Drawing' : 'Enable Drawing'}
+                    </button>
+                    <button onClick={handleResetCanvas}>Reset Canvas</button>
+                </div>
             </div>
 
             <div
@@ -352,40 +524,55 @@ const DiffusionApplication = () => {
             >
                 <div className="image-container">
                     <div className="image-wrapper" style={{ transform: `scale(${zoom})` }}>
-                        {(selectedImage) ? (
+                        {selectedImage && (
                             <>
-                                {comparisonMode === 'side-by-side' ? (
-                                    <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-                                        <img src={selectedImage} alt="Uploaded Preview" style={{ maxWidth: '50%', height: '300px' }} />
-                                        {/* Show processed image if available, otherwise show the same selected image */}
-                                        {processedImage ? (
-                                            <img src={processedImage} alt="Processed Upload" style={{ maxWidth: '50%', height: '300px' }} />
+                                <canvas
+                                    ref={canvasRef}
+                                    onMouseDown={handleCanvasMouseDown}
+                                    onMouseMove={handleCanvasMouseMove}
+                                    onMouseUp={handleCanvasMouseUp}
+                                    onMouseLeave={handleCanvasMouseUp}
+                                    style={{
+                                        cursor: isDrawingMode ? 'crosshair' : 'default',
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                        display: isDrawingMode ? 'block' : 'none'
+                                    }}
+                                />
+                                {!isDrawingMode && (
+                                    <>
+                                        {comparisonMode === 'side-by-side' ? (
+                                            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+                                                <img src={editedImage || selectedImage} alt="Edited Preview" style={{ maxWidth: '50%', height: '300px' }} />
+                                                {processedImage ? (
+                                                    <img src={processedImage} alt="Processed Upload" style={{ maxWidth: '50%', height: '300px' }} />
+                                                ) : (
+                                                    <img src={editedImage || selectedImage} alt="Edited Preview" style={{ maxWidth: '50%', height: '300px' }} />
+                                                )}
+                                            </div>
                                         ) : (
-                                            <img src={selectedImage} alt="Uploaded Preview" style={{ maxWidth: '50%', height: '300px' }} />
+                                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', maxWidth: '600px', height: '300px', margin: 'auto' }}>
+                                                <img src={editedImage || selectedImage} alt="Edited" style={{ position: 'absolute', width: '100%', height: '100%', clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }} />
+                                                {processedImage ? (
+                                                    <img src={processedImage} alt="Processed" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
+                                                ) : (
+                                                    <img src={editedImage || selectedImage} alt="Edited" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
+                                                )}
+                                                <div className="slider-bar" style={{
+                                                    position: 'absolute',
+                                                    top: '0',
+                                                    left: `${sliderPosition}%`,
+                                                    width: isMouseOver ? '3px' : '2px',
+                                                    backgroundColor: isMouseOver ? 'rgba(255, 255, 255, 0.8)' : 'white',
+                                                    cursor: isMouseOver ? 'col-resize' : 'none',
+                                                    height: '100%'
+                                                }}></div>
+                                            </div>
                                         )}
-                                    </div>
-                                ) : (
-                                    <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', maxWidth: '600px', height: '300px', margin: 'auto' }}>
-                                        <img src={selectedImage} alt="Original" style={{ position: 'absolute', width: '100%', height: '100%', clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }} />
-                                        {/* Show processed image if available, otherwise show the same selected image */}
-                                        {processedImage ? (
-                                            <img src={processedImage} alt="Processed" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
-                                        ) : (
-                                            <img src={selectedImage} alt="Original" style={{ position: 'relative', width: '100%', height: '100%', clipPath: `inset(0 0 0 ${sliderPosition}%)` }} />
-                                        )}
-                                        <div className="slider-bar" style={{
-                                            position: 'absolute',
-                                            top: '0',
-                                            left: `${sliderPosition}%`,
-                                            width: isMouseOver ? '3px' : '2px', // Wider when the mouse is over the image
-                                            backgroundColor: isMouseOver ? 'rgba(255, 255, 255, 0.8)' : 'white', // Semi-transparent when the mouse is over, bold when not
-                                            cursor: isMouseOver ? 'col-resize' : 'none', // Cursor is none when mouse is over the image
-                                            height: '100%'
-                                        }}></div>
-                                    </div>
+                                    </>
                                 )}
                             </>
-                        ) : null}
+                        )}
                     </div>
                 </div>
 
@@ -420,6 +607,8 @@ const DiffusionApplication = () => {
                     }}
                 />
             </section>
+
+
         </div>
     );
 };
