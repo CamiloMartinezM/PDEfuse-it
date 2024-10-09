@@ -6,9 +6,10 @@ and our tutor: Sivakumaran Harishanth.
 
 ## Image-Processing Features
 ### Diffusion-Algorithms
-- [x] **Homogeneous Diffusion**
-- [ ] Nonlinear Isotropic Diffusion
-  - [ ] Perona-Malik Filter
+- [x] Homogeneous Diffusion
+- [x] Homogeneous Diffusion Inpainting 
+- [x] Nonlinear Isotropic Diffusion
+  - [x] Perona-Malik Filter
   - [ ] Other ${g(|\nabla u|^2)}$ diffusivity functions
 - [ ] Nonlinear Anisotropic Diffusion
   - [ ] Edge-Enhancing Anisotropic Diffusion
