@@ -17,7 +17,7 @@ const NavBar: React.FC = () => {
   }
 
   const linkClass = (path: string) =>
-    `block py-2 px-3 md:text-highlight ${
+    `block py-2 px-3 text-highlight ${
       location.pathname === path
         ? 'text-white bg-highlighted rounded md:bg-transparent md:text-highlighted md:p-0'
         : 'text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 dark:text-white md:dark:hover:text-highlighted dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'
@@ -120,12 +120,12 @@ const NavBar: React.FC = () => {
                 <ul
                   className={`${
                     isDropdownOpen ? 'block' : 'hidden'
-                  } py-2 space-y-2  rounded-lg md:absolute md:top-full md:left-0 md:w-48 md:bg-white md:shadow-lg md:dark:bg-gray-700 z-50`}
+                  } py-2 space-y-2 rounded-lg md:absolute md:top-full md:left-0 md:w-48 md:bg-white md:shadow-lg md:dark:bg-body z-50 border-[1px] dark:border-gray-600 border-gray-100`}
                 >
                   <li>
                     <Link
                       to="/license"
-                      className="block px-4 py-2 text-highlight text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent dark:text-white md:dark:hover:text-highlighted dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                      className="block px-4 py-2 text-highlight rounded hover:bg-gray-100 md:hover:bg-transparent dark:text-white md:dark:hover:text-highlighted"
                       onClick={toggleMenu}
                     >
                       License
@@ -134,7 +134,7 @@ const NavBar: React.FC = () => {
                   <li>
                     <Link
                       to="/privacy"
-                      className="block px-4 py-2 text-highlight dark:text-white"
+                      className="block px-4 py-2 text-highlight rounded hover:bg-gray-100 md:hover:bg-transparent dark:text-white md:dark:hover:text-highlighted"
                       onClick={toggleMenu}
                     >
                       Privacy Policy
@@ -142,8 +142,8 @@ const NavBar: React.FC = () => {
                   </li>
                   <li>
                     <Link
-                      to="/terms"
-                      className="block px-4 py-2 text-highlight dark:text-white"
+                      to="/terms-and-conditions"
+                      className="block px-4 py-2 text-highlight rounded hover:bg-gray-100 md:hover:bg-transparent dark:text-white md:dark:hover:text-highlighted"
                       onClick={toggleMenu}
                     >
                       Terms and Conditions

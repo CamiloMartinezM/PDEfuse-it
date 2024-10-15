@@ -1,16 +1,36 @@
 export default function PageFooter() {
   return (
-    <footer className="bg-white dark:bg-gray-900">
+    <footer className="bg-white dark:bg-body">
       <div className="w-full max-w-screen-xl mx-auto p-2">
         <hr className="border-gray-200 sm:mx-auto dark:border-gray-700" />
-        <span className="block text-sm text-gray-500 text-center dark:text-gray-400 mt-1">
+        <span className="block text-sm text-gray-500 text-center dark:text-gray-400 mt-2">
           Made with ❤️ by
-          <a href="https://www.linkedin.com/in/camilo-martinez-m/" className="hover:text-highlight">
+          <a
+            href="https://www.linkedin.com/in/camilo-martinez-m/"
+            className="text-highlight"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {' '}
             Camilo Martínez
           </a>
-          , Honglu Ma &amp;
-          <a href="https://www.linkedin.com/in/dhimitriosduka/" className="hover:text-highlight">
+          ,{' '}
+          <a
+            href="https://github.com/Kanakanajm"
+            className="text-highlight"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {' '}
+            Honglu Ma
+          </a>{' '}
+          &amp;
+          <a
+            href="https://www.linkedin.com/in/dhimitriosduka/"
+            className="text-highlight"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {' '}
             Dhimitrios Duka
           </a>

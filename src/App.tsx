@@ -12,7 +12,7 @@ const App: React.FC = () => {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-grow">
+        <main className="flex-grow dark:bg-body dark:text-white">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/license" element={<LicensePage />} />

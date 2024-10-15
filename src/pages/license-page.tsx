@@ -6,7 +6,12 @@ const LicensePage: React.FC = () => {
       <h1 className="text-3xl font-bold mb-4">License</h1>
       <p>
         This is a simple license page. Released under the{' '}
-        <a href="https://opensource.org/license/MIT" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://opensource.org/license/MIT"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link"
+        >
           MIT License
         </a>
         .
