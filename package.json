@@ -11,8 +11,10 @@
         "@types/react": "^18.2.48",
         "@types/react-dom": "^18.2.18",
         "bootstrap": "^5.3.2",
+        "flowbite-react": "^0.10.2",
         "katex": "^0.16.11",
         "npm": "^10.4.0",
+        "prettier": "^3.3.3",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-markdown": "^9.0.1",
@@ -29,7 +31,8 @@
         "test-cache-clear": "jest --clearCache",
         "test": "jest --silent --coverage",
         "test-silent": "jest --reporters jest-silent-reporter",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "format": "prettier --write src/"
     },
     "eslintConfig": {
         "extends": [

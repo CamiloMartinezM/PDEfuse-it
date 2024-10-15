@@ -3,7 +3,19 @@
 @tailwind utilities;
 
 @layer components {
-    .zoom-control-button {
-        @apply p-2 bg-white border border-gray-300 rounded-lg cursor-pointer;
-    }
+  .zoom-control-button {
+    @apply p-2 bg-white border border-gray-300 rounded-lg cursor-pointer;
+  }
+
+  .text-highlight {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  .text-highlight:hover {
+    @apply text-highlighted;
+  }
+
+  .link {
+    @apply text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300;
+  }
 }
