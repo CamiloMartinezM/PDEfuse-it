@@ -155,12 +155,13 @@ export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProp
     };
 
     return (
-        <div className="algorithm-settings">
-            <div className="algorithm-controls">
-                <h2>Diffusion Algorithm</h2>
+        <div className="flex flex-col w-full">
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-4">Diffusion Algorithm</h2>
                 <select
                     value={selectedAlgorithm.name}
                     onChange={handleAlgorithmChange}
+                    className="w-full p-2 mb-4 border border-gray-300 rounded"
                 >
                     {algorithms.map((alg) => (
                         <option key={alg.name} value={alg.name}>
@@ -173,25 +174,30 @@ export const DiffusionAlgorithmSettings: React.FC<DiffusionAlgorithmSettingsProp
                         key={param.label}
                         type={param.type}
                         label={param.label}
-                        className="input-style-class"
+                        className="w-full p-2 mb-4 border border-gray-300 rounded"
                         value={param.value}
                         step={param.step}
                         onChange={(e) => handleParameterChange(index, e.target.value)}
                     />
                 ))}
-                <button onClick={handleApply}>
+                <button 
+                    onClick={handleApply}
+                    className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+                >
                     Apply {selectedAlgorithm.name}
                 </button>
             </div>
-            <div className="algorithm-description">
-                <h3>Description</h3>
-                <ReactMarkdown
-                    remarkPlugins={[remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    className="prose"
-                >
-                    {description}
-                </ReactMarkdown>
+            <div className="mt-6">
+                <h3 className="text-xl font-semibold mb-2">Description</h3>
+                <div className="overflow-y-auto pr-4 max-h-96">
+                    <ReactMarkdown
+                        remarkPlugins={[remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                        className="prose prose-sm"
+                    >
+                        {description}
+                    </ReactMarkdown>
+                </div>
             </div>
         </div>
     );

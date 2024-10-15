@@ -409,8 +409,8 @@ const DiffusionApplication = () => {
     };
 
     return (
-        <div className="diffusion-application-section">
-            <div className="image-editor-section">
+        <div className="flex justify-center w-full">
+            <div className="w-2/5 h-full max-h-full pr-5 overflow-y-hidden">
                 {/* Listbox for selecting an image */}
                 <div className="image-selector">
                     <label htmlFor="image-selection">Use a classic Computer Vision test image:</label>
@@ -432,7 +432,7 @@ const DiffusionApplication = () => {
                 <div className="empty-space"></div>
                 <label htmlFor="image-selection">Or upload your own:</label>
 
-                <div className="images-section">
+                <div className="h-24 border border-gray-300 mb-5 overflow-y-auto p-2.5 rounded-md">
                     {uploadedImages.map((img, index) => (
                         <div key={index} onClick={() => {
                             setSelectedImage(img.dataUrl);
@@ -457,67 +457,82 @@ const DiffusionApplication = () => {
                 </div>
                 <div className="empty-space"></div>
 
-                <div className="tone-mapping" >
-                    <h3>Tonemapping</h3>
-
-                    {/* Sliders for Exposure, Offset, Gamma */}
-                    <div className="sliders">
-                        <label htmlFor="exposure">Exposure</label>
-                        <input type="range" id="exposure" name="exposure" min="-2" max="2" step="0.1" value={exposure} onChange={handleExposureChange} />
-
-                        <div className="half-sliders">
+                <div className="w-full space-y-8">
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h3 className="text-2xl font-semibold mb-4 text-gray-800">Tonemapping</h3>
+                        <div className="space-y-4">
                             <div>
-                                <label htmlFor="offset">Offset</label>
-                                <input type="range" id="offset" name="offset" min="-128" max="128" value={offset} onChange={handleOffsetChange} />
+                                <label htmlFor="exposure" className="block text-sm font-medium text-gray-700 mb-1">Exposure</label>
+                                <input type="range" id="exposure" name="exposure" min="-2" max="2" step="0.1" value={exposure} onChange={handleExposureChange}
+                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
                             </div>
-                            <div>
-                                <label htmlFor="gamma">Gamma</label>
-                                <input type="range" id="gamma" name="gamma" min="0.1" max="3" step="0.1" value={gamma} onChange={handleGammaChange} />
+                            <div className="flex gap-4">
+                                <div className="flex-1">
+                                    <label htmlFor="offset" className="block text-sm font-medium text-gray-700 mb-1">Offset</label>
+                                    <input type="range" id="offset" name="offset" min="-128" max="128" value={offset} onChange={handleOffsetChange}
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                                </div>
+                                <div className="flex-1">
+                                    <label htmlFor="gamma" className="block text-sm font-medium text-gray-700 mb-1">Gamma</label>
+                                    <input type="range" id="gamma" name="gamma" min="0.1" max="3" step="0.1" value={gamma} onChange={handleGammaChange}
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="empty-space"></div>
-
-                    {/* Buttons for image tone mapping */}
-                    <div className="button-group">
-                        <button onClick={handleConvertToGrayscale}>Convert to Grayscale</button>
-                        <button onClick={handleNormalizeImage}>Normalize</button>
-                        <button onClick={handleReset}>Reset</button>
-                    </div>
-
-                    <div className="empty-space"></div>
-
-                    <div className="button-group">
-                        <button onClick={handleSRGB}>sRGB</button>
-                        <button onClick={handleFC}>FC</button>
-                        <button onClick={handleToggle}>+/-</button>
+                        <div className="mt-6 flex flex-wrap gap-1 w-full">
+                            <button onClick={handleConvertToGrayscale} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Convert to Grayscale</button>
+                            <button onClick={handleNormalizeImage} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">Normalize</button>
+                            <button onClick={handleReset} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Reset</button>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                            <button onClick={handleSRGB} className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition">sRGB</button>
+                            <button onClick={handleFC} className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition">FC</button>
+                            <button onClick={handleToggle} className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">+/-</button>
+                        </div>
                     </div>
                 </div>
 
-                <div className="paint-tool-controls">
-                    <h3>Paint Tool</h3>
-                    <div>
-                        <label htmlFor="square-size">Square Size: </label>
-                        <input
-                            type="range"
-                            id="square-size"
-                            min="10"
-                            max="100"
-                            value={paintSquareSize}
-                            onChange={handleSquareSizeChange}
-                        />
-                        <span>{paintSquareSize}px</span>
+                {/* Paint Tool Section */}
+                <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-6 rounded-lg shadow-lg">
+                    <h3 className="text-2xl font-bold mb-4 text-gray-800">Paint Tool</h3>
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-4">
+                            <label htmlFor="square-size" className="text-sm font-medium text-gray-700">Square Size:</label>
+                            <input
+                                type="range"
+                                id="square-size"
+                                min="10"
+                                max="100"
+                                value={paintSquareSize}
+                                onChange={handleSquareSizeChange}
+                                className="flex-grow h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <span className="text-sm font-semibold text-blue-600">{paintSquareSize}px</span>
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={toggleDrawingMode}
+                                className={`flex-1 py-2 px-4 rounded-full font-semibold transition ${isDrawingMode
+                                    ? 'bg-red-500 text-white hover:bg-red-600'
+                                    : 'bg-green-500 text-white hover:bg-green-600'
+                                    }`}
+                            >
+                                {isDrawingMode ? 'Disable Drawing' : 'Enable Drawing'}
+                            </button>
+                            <button
+                                onClick={handleResetCanvas}
+                                className="flex-1 py-2 px-4 bg-gray-500 text-white rounded-full font-semibold hover:bg-gray-600 transition"
+                            >
+                                Reset Canvas
+                            </button>
+                        </div>
                     </div>
-                    <button onClick={toggleDrawingMode}>
-                        {isDrawingMode ? 'Disable Drawing' : 'Enable Drawing'}
-                    </button>
-                    <button onClick={handleResetCanvas}>Reset Canvas</button>
                 </div>
             </div>
 
             <div
-                className="image-display-area"
+                className="w-full h-4/5 max-h-4/5 min-h-4/5 flex flex-col items-center justify-center relative p-5 overflow-hidden"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={resetSlider}
                 onMouseEnter={() => setIsMouseOver(true)} // When the mouse enters the area
@@ -576,25 +591,27 @@ const DiffusionApplication = () => {
                     </div>
                 </div>
 
-                <div className="comparison-button-group">
+                <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-2.5">
                     <button
                         onClick={() => setComparisonMode('side-by-side')}
-                        className={comparisonMode === 'side-by-side' ? 'active' : ''}
+                        className={`px-5 py-2.5 border-none cursor-pointer transition-colors rounded-lg duration-300 ${comparisonMode === 'side-by-side' ? 'bg-blue-600 text-blue-100' : 'bg-gray-200 text-gray-400'
+                            }`}
                     >
                         Side-by-side comparison
                     </button>
                     <button
                         onClick={() => setComparisonMode('juxtaposed')}
-                        className={comparisonMode === 'juxtaposed' ? 'active' : ''}
+                        className={`px-5 py-2.5 border-none cursor-pointer transition-colors rounded-lg duration-300 ${comparisonMode === 'juxtaposed' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-400'
+                            }`}
                     >
                         Juxtaposed-comparison
                     </button>
                 </div>
 
-                <div className="zoom-controls">
-                    <button onClick={handleZoomIn}>+</button>
-                    <button onClick={handleZoomOut}>-</button>
-                    <button onClick={handleZoomReset}>Reset</button>
+                <div className="absolute top-5 right-5 flex gap-2.5">
+                    <button className='zoom-control-button' onClick={handleZoomIn}>+</button>
+                    <button className='zoom-control-button' onClick={handleZoomOut}>-</button>
+                    <button className='zoom-control-button' onClick={handleZoomReset}>Reset</button>
                 </div>
             </div>
 
