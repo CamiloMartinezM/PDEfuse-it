@@ -1,6 +1,6 @@
 export default function PageFooter() {
   return (
-    <footer className="bg-white dark:bg-body">
+    <footer className="bg-white dark:bg-body flex-shrink-0">
       <div className="w-full max-w-screen-xl mx-auto p-2">
         <hr className="border-gray-200 sm:mx-auto dark:border-gray-700" />
         <span className="block text-sm text-gray-500 text-center dark:text-gray-400 mt-2">

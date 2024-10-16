@@ -24,7 +24,7 @@ const NavBar: React.FC = () => {
     }`
 
   return (
-    <header>
+    <header className="flex-shrink-0">
       <nav className="w-full border-b bg-white border-gray-200 dark:border-gray-700 dark:bg-header">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
