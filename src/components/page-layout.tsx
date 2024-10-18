@@ -1,5 +1,6 @@
 import PageHeader from "./page-header";
 import PageFooter from "./page-footer";
+import React from "react";
 
 export default function PageLayout({ children }: { children :React.ReactNode }) {
   return (

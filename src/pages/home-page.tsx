@@ -4,6 +4,7 @@ import "./home-page.css";
 import { getRotationMatrix } from "../utils/2d/shape";
 import { Arrow, getCirclePath } from "../utils/2d/shapes";
 import { VectorField } from "../utils/2d/vector-field";
+import React from "react";
 
 function HomePage() {
     const canvasRef = useRef<HTMLCanvasElement>(null);

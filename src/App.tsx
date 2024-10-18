@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import HomePage from './pages/home-page';
 import HomogeneousDiffusionDemoPage from './pages/homodiff-demo-page';
+import React from 'react';
 
 const App = () => {
   return (

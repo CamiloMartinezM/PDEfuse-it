@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { FileInput } from "../inputs/file-input";
 import { Slider } from "../inputs/slider";
+import React from "react";
 
 export function DiffusionInteractionPanel() {
     const [file, setFile] = useState<File | null>(null);

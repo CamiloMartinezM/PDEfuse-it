@@ -1,3 +1,4 @@
+import React from "react";
 import ImageUploader from "../components/forms/image-uploader";
 import PageLayout from "../components/page-layout";
 
