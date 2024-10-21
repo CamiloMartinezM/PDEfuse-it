@@ -1,26 +1,21 @@
 import * as React from 'react';
-import { PaletteMode } from '@mui/material/styles';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton';
 import ModeNightRoundedIcon from '@mui/icons-material/ModeNightRounded';
 import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { toggle } from '../features/theme/themeSlice';
 
-interface ToggleColorModeProps extends IconButtonProps {
-  mode: PaletteMode;
-  toggleColorMode: () => void;
-}
+export default function ToggleColorMode() {
+  const mode = useAppSelector((state) => state.theme.mode);
+  const dispatch = useAppDispatch();
 
-export default function ToggleColorMode({
-  mode,
-  toggleColorMode,
-  ...props
-}: ToggleColorModeProps) {
   return (
     <IconButton
-      onClick={toggleColorMode}
+      onClick={() => dispatch(toggle())}
       color="primary"
       size="small"
       aria-label="Theme toggle button"
-      {...props}
+      data-screenshot="toggle-mode"
     >
       {mode === 'dark' ? (
         <WbSunnyRoundedIcon fontSize="small" />

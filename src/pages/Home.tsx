@@ -1,14 +1,11 @@
 import { useEffect, useRef } from "react";
-import PageLayout from "../components/page-layout";
-import "./home-page.css";
-import { getRotationMatrix } from "../utils/2d/shape";
-import { Arrow, getCirclePath } from "../utils/2d/shapes";
 import { VectorField } from "../utils/2d/vector-field";
 import React from "react";
+import { useAppSelector } from "../hooks";
 
 function HomePage() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-
+    const mode = useAppSelector(state => state.theme.mode);
     useEffect(() => {
         const convasElement = canvasRef.current;
 
@@ -26,7 +23,8 @@ function HomePage() {
                     [ [1, 0], [1, 0], [1, 0], [-1, -1], [1, 0] ],
                     [ [1, 0], [1, 0], [1, 0], [1, 0], [-1, -1] ]
                 ]);
-
+                ctx.fillStyle = mode === 'dark' ? 'white' : 'black';
+                
                 ctx.fill(field.getPath());
                 // const loop = () => {
                 //     // clear the canvas
@@ -54,14 +52,12 @@ function HomePage() {
                 
             }
         }
-      }, [canvasRef])      
+      }, [canvasRef, mode])      
 
     return (
-        <PageLayout>
-            <div className="d-flex justify-content-center">
-                <canvas id="canvas" width="150" height="150" ref={canvasRef}></canvas>
-            </div>
-        </PageLayout>
+        <div>
+            <canvas id="canvas" width="150" height="150" ref={canvasRef} />
+        </div>
     );
 };
 

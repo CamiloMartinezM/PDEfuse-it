@@ -11,7 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import Sitemark from './SitemarkIcon';
+import ToggleColorMode from './ToggleColorMode';
+import Logo from './Logo';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -37,46 +38,36 @@ export default function AppAppBar() {
   return (
     <AppBar
       position="fixed"
-      sx={{ boxShadow: 0, bgcolor: 'transparent', backgroundImage: 'none', mt: 10 }}
+      sx={{ boxShadow: 0, bgcolor: 'transparent', backgroundImage: 'none', mt: 2 }}
     >
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button variant="text" color="info" size="small">
-                Features
+            <Logo />
+            <Box sx={{ ml: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Button variant="text" color="info" size="small" href="/learn">
+                Learn
               </Button>
-              <Button variant="text" color="info" size="small">
-                Testimonials
+              <Button variant="text" color="info" size="small" href="/tools">
+                Tools
               </Button>
-              <Button variant="text" color="info" size="small">
-                Highlights
+              <Button variant="text" color="info" size="small" href="/api">
+                API
               </Button>
-              <Button variant="text" color="info" size="small">
-                Pricing
+              <Button variant="text" color="info" size="small" href="/about">
+                About
               </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                FAQ
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                Blog
+              <Button variant="text" color="info" size="small"href="/template">
+                Template
               </Button>
             </Box>
           </Box>
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              gap: 1,
-              alignItems: 'center',
-            }}
-          >
-            <Button color="primary" variant="text" size="small">
-              Sign in
-            </Button>
-            <Button color="primary" variant="contained" size="small">
-              Sign up
-            </Button>
+          <Box sx={{
+            display: { xs: 'none', md: 'flex' },
+            gap: 1,
+            alignItems: 'center'
+            }}>
+              <ToggleColorMode />
           </Box>
           <Box sx={{ display: { sm: 'flex', md: 'none' } }}>
             <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
@@ -96,21 +87,13 @@ export default function AppAppBar() {
                   </IconButton>
                 </Box>
                 <Divider sx={{ my: 3 }} />
-                <MenuItem>Features</MenuItem>
-                <MenuItem>Testimonials</MenuItem>
-                <MenuItem>Highlights</MenuItem>
-                <MenuItem>Pricing</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-                <MenuItem>Blog</MenuItem>
+                <MenuItem>Learn</MenuItem>
+                <MenuItem>Tools</MenuItem>
+                <MenuItem>API</MenuItem>
+                <MenuItem>About</MenuItem>
+                <MenuItem>Template</MenuItem>
                 <MenuItem>
-                  <Button color="primary" variant="contained" fullWidth>
-                    Sign up
-                  </Button>
-                </MenuItem>
-                <MenuItem>
-                  <Button color="primary" variant="outlined" fullWidth>
-                    Sign in
-                  </Button>
+                <ToggleColorMode />
                 </MenuItem>
               </Box>
             </Drawer>

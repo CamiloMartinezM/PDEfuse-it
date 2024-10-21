@@ -12,17 +12,19 @@ import Typography from '@mui/material/Typography';
 import FacebookIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/X';
-import SitemarkIcon from './SitemarkIcon';
+import Logo from './Logo';
 
-function Copyright() {
+function Copyright() {  
   return (
     <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
       {'Copyright © '}
-      <Link color="text.secondary" href="https://mui.com/">
-        Sitemark
+      <Link color="text.secondary" href="/">
+        PDEF use-it
       </Link>
       &nbsp;
       {new Date().getFullYear()}
+      &nbsp;
+      Created by C & J. Ah Shit, Here We Go Again
     </Typography>
   );
 }
@@ -58,7 +60,7 @@ export default function Footer() {
             }}
           >
             <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
-              <SitemarkIcon />
+              <Logo />
               <Typography
                 variant="body2"
                 gutterBottom
@@ -98,7 +100,7 @@ export default function Footer() {
               </Stack>
             </Box>
           </Box>
-          <Box
+          {/* <Box
             sx={{
               display: { xs: 'none', sm: 'flex' },
               flexDirection: 'column',
@@ -143,8 +145,8 @@ export default function Footer() {
             <Link color="text.secondary" variant="body2" href="#">
               Press
             </Link>
-          </Box>
-          <Box
+          </Box> */}
+          {/* <Box
             sx={{
               display: { xs: 'none', sm: 'flex' },
               flexDirection: 'column',
@@ -163,7 +165,7 @@ export default function Footer() {
             <Link color="text.secondary" variant="body2" href="#">
               Contact
             </Link>
-          </Box>
+          </Box> */}
         </Box>
         <Box
           sx={{
@@ -196,7 +198,7 @@ export default function Footer() {
             <IconButton
               color="inherit"
               size="small"
-              href="https://github.com/mui"
+              href="https://github.com/CamiloMartinezM/PDEfuse-it/"
               aria-label="GitHub"
               sx={{ alignSelf: 'center' }}
             >
@@ -208,6 +210,7 @@ export default function Footer() {
               href="https://x.com/MaterialUI"
               aria-label="X"
               sx={{ alignSelf: 'center' }}
+              disabled
             >
               <TwitterIcon />
             </IconButton>
@@ -217,6 +220,7 @@ export default function Footer() {
               href="https://www.linkedin.com/company/mui/"
               aria-label="LinkedIn"
               sx={{ alignSelf: 'center' }}
+              disabled
             >
               <LinkedInIcon />
             </IconButton>

@@ -4,6 +4,8 @@ Made with ❤️ by C. J. (Camilo & Jackie)
 Credit goes to [Dr. Pascal Peter](https://www.mia.uni-saarland.de/peter/index.shtml) who delivered this awesome course
 and our tutor: Sivakumaran Harishanth. 
 
+Custom theme and layout are derived from [Material UI blog template](https://mui.com/material-ui/getting-started/templates/)
+
 ## Image-Processing Features
 ### Diffusion-Algorithms
 - [x] **Homogeneous Diffusion**
